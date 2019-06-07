@@ -8,6 +8,9 @@
 #include "randperm.h"
 #include "colon.h"
 #include <algorithm> 
+#if(__cplusplus >= 201402L)
+#  include <random>
+#endif
 
 template <typename DerivedI>
 IGL_INLINE void igl::randperm(
@@ -17,7 +20,13 @@ IGL_INLINE void igl::randperm(
   Eigen::VectorXi II;
   igl::colon(0,1,n-1,II);
   I = II;
+#if(__cplusplus >= 201402L)
+  std::random_device rng;
+  std::mt19937 urng(rng());
+  std::shuffle(I.data(),I.data()+n,urng);
+#else
   std::random_shuffle(I.data(),I.data()+n);
+#endif
 }
 
 #ifdef IGL_STATIC_LIBRARY

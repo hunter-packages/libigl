@@ -77,6 +77,10 @@ target_compile_features(igl_common INTERFACE ${CXX11_FEATURES})
 if(MSVC)
   # Enable parallel compilation for Visual Studio
   target_compile_options(igl_common INTERFACE /MP /bigobj)
+  target_compile_options(igl_common INTERFACE /Zc:__cplusplus)
+  if(LIBIGL_USE_STATIC_LIBRARY)
+    target_compile_definitions(igl_common INTERFACE -D_USE_MATH_DEFINES)
+  endif()
   if(LIBIGL_WITH_CGAL)
     target_compile_options(igl_common INTERFACE "/MD$<$<CONFIG:Debug>:d>")
   endif()
@@ -449,7 +453,7 @@ function(install_dir_files dir_name)
 
   if(NOT LIBIGL_USE_STATIC_LIBRARY)
     file(GLOB public_sources
-      ${CMAKE_CURRENT_SOURCE_DIR}/include/igl${subpath}/*.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/igl${subpath}/*.c*
     )
   endif()
   list(APPEND files_to_install ${public_sources})
